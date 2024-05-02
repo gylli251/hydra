@@ -27,12 +27,15 @@ const openGameInstaller = async (
     return true;
   }
 
-  const setupPath = path.join(gamePath, "setup.exe");
-  if (!fs.existsSync(setupPath)) {
+  const files = fs.readdirSync(gamePath);
+  const setupFileName = files.find(file => /^setup\.exe$/i.test(file));
+  const setupPath = setupFileName ? path.join(gamePath, setupFileName) : null;
+
+  if (!setupPath || !fs.existsSync(setupPath)) {
     shell.openPath(gamePath);
     return true;
   }
-
+  
   if (process.platform === "win32") {
     shell.openPath(setupPath);
     return true;
